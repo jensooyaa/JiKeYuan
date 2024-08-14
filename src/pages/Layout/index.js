@@ -11,6 +11,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchUserInfo } from '../../store/mudules/user'
+import { clearUserInfo } from '../../store/mudules/user'
 
 const { Header, Sider } = Layout
 
@@ -42,10 +43,15 @@ const GeekLayout = () => {
     }, [])
     const name = useSelector(state => state.user.userInfo.name)
     console.log(name)
-    const menuClick = (route) => {
+    const menuClick = (route) => {//点击导航进行路由跳转
         console.log(route)
         navigate(route.key)
 
+    }
+    // 退出登录
+    const loginOut = () => {
+        dispatch(clearUserInfo())
+        navigate('/login')
     }
     return (
         <Layout>
@@ -54,7 +60,7 @@ const GeekLayout = () => {
                 <div className="user-info">
                     <span className="user-name">{name}</span>
                     <span className="user-logout">
-                        <Popconfirm title="是否确认退出？" okText="退出" cancelText="取消">
+                        <Popconfirm title="是否确认退出？" okText="退出" cancelText="取消" onConfirm={loginOut}>
                             <LogoutOutlined /> 退出
                         </Popconfirm>
                     </span>

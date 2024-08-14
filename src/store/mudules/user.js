@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { request, getToken, setToken as setTokens } from '../../utils'
-
+import { clearToken } from '../../utils'
 const userStore = createSlice({
     name: 'user',
     // 数据状态
@@ -17,12 +17,17 @@ const userStore = createSlice({
         },
         setUserInfo(state, action) {
             state.userInfo = action.payload
+        },
+        clearUserInfo(state) {//清除信息
+            state.token = ''
+            state.userInfo = {}
+            clearToken()
         }
     }
 })
 
 // 解构出actionCreater
-const { setToken, setUserInfo } = userStore.actions
+const { setToken, setUserInfo, clearUserInfo } = userStore.actions
 // 获取reducer函数
 const userReducer = userStore.reducer
 
@@ -39,7 +44,7 @@ const fetchUserInfo = () => {
         dispatch(setUserInfo(res.data))
     }
 }
-export { fetchLogin, fetchUserInfo }
+export { fetchLogin, fetchUserInfo, clearUserInfo }
 
 
 export default userReducer
