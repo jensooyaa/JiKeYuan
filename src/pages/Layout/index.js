@@ -42,7 +42,7 @@ const GeekLayout = () => {
         dispatch(fetchUserInfo())
     }, [])
     const name = useSelector(state => state.user.userInfo.name)
-    console.log(name)
+    // console.log(name)
     const menuClick = (route) => {//点击导航进行路由跳转
         console.log(route)
         navigate(route.key)

@@ -9,7 +9,7 @@ import {
     Space,
     Select
 } from 'antd'
-//   import { PlusOutlined } from '@ant-design/icons'
+import { PlusOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
 import './index.scss'
 import ReactQuill from 'react-quill'
@@ -33,25 +33,37 @@ const Publish = () => {
         fetchChannels()
 
     }, [])
+
+    // 上传图片
+    const [imageList, setImageList] = useState([])
+    const onUploadChange = (info) => {
+        setImageList(info.fileList)
+    }
+    // 控制图片Type
+    const [imageType, setImageType] = useState(0)
+    const onTypeChange = (e) => {
+        setImageType(e.target.value)
+        console.log(e.target.value);
+
+    }
+
+
     //发布文章
     const onFinish = async (formValue) => {
+        if (imageType !== imageList.length) return message.warning('图片类型和数量不一致')
         const { title, content, channel_id } = formValue
         const params = {
             title,
             content,
-            "cover": {
-                "type": 0,
-                "images": [
-                ]
+            cover: {
+                type: imageType,
+                images: imageList.map(item => item.response.data.url)
             },
             channel_id
         }
         message.success('发布文章成功')
         await createArticleAPI(params)
     }
-
-
-
 
 
 
@@ -88,6 +100,32 @@ const Publish = () => {
                             {channels.map(Item => <Option key={Item.id} value={Item.name}>{Item.name}</Option>)}
                         </Select>
                     </Form.Item>
+
+                    <Form.Item label="封面">
+                        <Form.Item name="type">
+                            <Radio.Group onChange={onTypeChange}>
+                                <Radio value={1}>单图</Radio>
+                                <Radio value={3}>三图</Radio>
+                                <Radio value={0}>无图</Radio>
+                            </Radio.Group>
+                        </Form.Item>
+                        {imageType > 0 && <Upload
+                            listType="picture-card"
+                            showUploadList
+                            action={'http://geek.itheima.net/v1_0/upload'}
+                            name="image"
+                            onChange={onUploadChange}
+                            maxCount={imageType}//限制图片的上传图片数量
+                            multiple={imageType > 1}//设置是否支持多选文件
+
+                        >
+                            <div style={{ marginTop: 8 }}>
+                                <PlusOutlined />
+                            </div>
+
+                        </Upload>}
+                    </Form.Item>
+
                     <Form.Item
                         label="内容"
                         name="content"
