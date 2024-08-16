@@ -26,7 +26,6 @@ const Publish = () => {
     // 调用接口
     useEffect(() => {
         async function fetchChannels() {
-
             const res = await getChannelAPI()
             setChannels(res.data.channels)
         }
